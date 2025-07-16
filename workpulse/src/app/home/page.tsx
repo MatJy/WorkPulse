@@ -1,3 +1,21 @@
-export default function home() {
-    return <p>home page</p>;
+import { redirect } from 'next/navigation';
+
+import { createClient } from '@/utils/supabase/server';
+import { signOut } from '../logout/actions';
+
+export default async function Home() {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user) {
+        redirect('/login');
+    }
+
+    return (
+        <main>
+            {' '}
+            <p>Hello {data.user.email}</p>
+            <button onClick={signOut}>Sign out</button>
+        </main>
+    );
 }

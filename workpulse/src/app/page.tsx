@@ -3,7 +3,7 @@ export default function Home() {
         <div>
             {' '}
             <p>hello</p>
-            <a href="/register">register</a>
+            <a href="/signup">register</a>
             <br />
             <a href="/login">login</a>
         </div>
