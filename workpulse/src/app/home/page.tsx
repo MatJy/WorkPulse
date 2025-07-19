@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/utils/supabase/server';
 import { signOut } from '../logout/actions';
+import ShowModal from '../components/showModal';
 
 export default async function Home() {
     const supabase = await createClient();
@@ -16,6 +17,7 @@ export default async function Home() {
             {' '}
             <p>Hello {data.user.email}</p>
             <button onClick={signOut}>Sign out</button>
+            <ShowModal />
         </main>
     );
 }
