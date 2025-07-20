@@ -34,7 +34,6 @@ export default function ModalPage1({ onNext }: Props) {
 
     async function handleSubmit(formData: FormData) {
         const sessionId = await CreateWorkSession(formData, totalLength);
-        console.log(sessionId);
         onNext(breaks, Number(breakTime), sessionId);
     }
     return (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ModalPage1 from './modalpage1';
 import ModalPage2 from './modalpage2';
+import { CreateBreak, DeleteSession } from './actions';
 
 type ModalProps = {
     isOpen?: boolean;
@@ -15,6 +16,14 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
 
     const handleNext = () => setCurrentPage('page2');
     const handleBack = () => setCurrentPage('page1');
+
+    function CloseModal() {
+        onClose?.();
+        if (sessionId) {
+            DeleteSession(sessionId);
+            handleBack();
+        }
+    }
 
     if (!isOpen) return null;
     return (
@@ -44,6 +53,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
                         breaks={breaks}
                         breakTime={breakTime}
                         sessionId={sessionId}
+                        onClose={onClose}
                     />
                 )}
             </div>
@@ -51,7 +61,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
             <button
                 className="[background:linear-gradient(144deg,#af40ff,#5b42f3_50%,#00ddeb)] text-white px-4 py-2 font-bold rounded-md hover:opacity-80"
                 type="button"
-                onClick={onClose}
+                onClick={CloseModal}
             >
                 Close
             </button>

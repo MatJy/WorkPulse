@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { signOut } from '../logout/actions';
 import ShowModal from '../components/showModal';
+import Profile from '../components/profile';
+import SessionCard from '../components/sessionCard';
 
 export default async function Home() {
     const supabase = await createClient();
@@ -14,9 +16,16 @@ export default async function Home() {
 
     return (
         <main>
-            {' '}
-            <p>Hello {data.user.email}</p>
-            <button onClick={signOut}>Sign out</button>
+            <div className="p-10">
+                <Profile />
+            </div>
+            <div className="p-10">
+                <SessionCard />
+            </div>
+            <button onClick={signOut} className="cursor-pointer">
+                Sign out
+            </button>
+            <br />
             <ShowModal />
         </main>
     );

@@ -9,5 +9,5 @@ export async function signOut() {
     await supabase.auth.signOut();
 
     // Palauta käyttäjä login-sivulle
-    redirect('/login');
+    redirect('/');
 }

@@ -7,8 +7,12 @@ export default function ShowModal() {
 
     return (
         <>
-            <button type="button" onClick={() => setIsOpen(true)}>
-                Open Modal
+            <button
+                type="button"
+                className="cursor-pointer"
+                onClick={() => setIsOpen(true)}
+            >
+                Create work session
             </button>
 
             <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} />
