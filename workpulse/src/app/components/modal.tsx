@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalPage1 from './modalpage1';
 import ModalPage2 from './modalpage2';
-import { CreateBreak, DeleteSession } from './actions';
+import { DeleteSession } from './actions';
 
 type ModalProps = {
     isOpen?: boolean;
@@ -24,6 +24,16 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
             handleBack();
         }
     }
+
+    // Resetoi tila kun modal avataan uudestaan
+    useEffect(() => {
+        if (isOpen) {
+            setCurrentPage('page1');
+            setBreaks(Number);
+            setBreakTime(Number);
+            setSessionId(Number);
+        }
+    }, [isOpen]);
 
     if (!isOpen) return null;
     return (

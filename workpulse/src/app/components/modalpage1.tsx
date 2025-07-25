@@ -69,6 +69,7 @@ export default function ModalPage1({ onNext }: Props) {
                         id="hours"
                         type="text"
                         placeholder="Hours"
+                        max="10"
                         value={lengthHours}
                         onChange={handleChange}
                         required

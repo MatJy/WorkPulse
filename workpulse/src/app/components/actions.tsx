@@ -34,30 +34,49 @@ export async function CreateWorkSession(formData: FormData, props: number) {
     }
 }
 
-export async function FetchSession() {
+// export async function FetchSession() {
+//     const supabase = await createClient();
+
+//     const { data: workSession } = await supabase.from('workSession').select();
+
+//     return workSession;
+// }
+
+// export async function FetchBreak(sessionId: number) {
+//     const supabase = await createClient();
+
+//     const {
+//         data: { user },
+//     } = await supabase.auth.getUser();
+
+//     if (!user) return;
+//     const { data, error } = await supabase
+//         .from('Break')
+//         .select()
+//         .eq('session_id', sessionId);
+
+//     return data;
+// }
+
+export async function FetchSessionsWithBreaks() {
     const supabase = await createClient();
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const { data: sessions } = await supabase.from('workSession').select();
 
-    if (!user) return;
-    const { data, error } = await supabase.from('workSession').select();
+    if (!sessions) return [];
 
-    return data;
-}
+    const result = [];
 
-export async function FetchBreak() {
-    const supabase = await createClient();
+    for (const session of sessions) {
+        const { data: breaks } = await supabase
+            .from('Break')
+            .select()
+            .eq('session_id', session.id);
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+        result.push({ session, breaks: breaks || [] });
+    }
 
-    if (!user) return;
-    const { data, error } = await supabase.from('Break').select();
-
-    return data;
+    return result;
 }
 
 export async function UpdateWorkSession(
@@ -102,17 +121,8 @@ export async function DeleteSession(session_id: number) {
         .delete()
         .eq('id', session_id);
 
-    const { error: breakError } = await supabase
-        .from('Break')
-        .delete()
-        .eq('session_id', session_id);
-
-    if (sessionError || breakError) {
-        console.error(
-            'Supabase delete error:',
-            sessionError?.message,
-            breakError?.message
-        );
+    if (sessionError) {
+        console.error('Supabase delete error:', sessionError?.message);
     }
 }
 
@@ -134,6 +144,7 @@ export async function CreateBreak(
 
     const { error } = await supabase.from('Break').insert({
         session_id: sessionId,
+        user_id: user.id,
         name: name,
         length: breakLength,
         order: order,

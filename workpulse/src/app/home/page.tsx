@@ -1,18 +1,11 @@
-import { redirect } from 'next/navigation';
-
-import { createClient } from '@/utils/supabase/server';
 import { signOut } from '../logout/actions';
 import ShowModal from '../components/showModal';
 import Profile from '../components/profile';
-import SessionCard from '../components/sessionCard';
+import { FetchSessionsWithBreaks } from '../components/actions';
+import RealtimeSessionsBreaks from '../components/realtime-sessionsBreaks';
 
 export default async function Home() {
-    const supabase = await createClient();
-
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data?.user) {
-        redirect('/login');
-    }
+    const data1 = await FetchSessionsWithBreaks();
 
     return (
         <main>
@@ -20,7 +13,7 @@ export default async function Home() {
                 <Profile />
             </div>
             <div className="p-10">
-                <SessionCard />
+                <RealtimeSessionsBreaks sessionBreaks={data1} />
             </div>
             <button onClick={signOut} className="cursor-pointer">
                 Sign out

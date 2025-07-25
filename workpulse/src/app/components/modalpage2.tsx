@@ -1,5 +1,4 @@
 import { CreateBreak } from './actions';
-import Modal from './modal';
 
 type Props = {
     onBack?: () => void;
@@ -10,7 +9,6 @@ type Props = {
 };
 
 export default function ModalPage2({
-    onBack,
     breaks,
     breakTime,
     sessionId,
