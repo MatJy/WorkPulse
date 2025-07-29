@@ -1,4 +1,26 @@
-import { CreateBreak } from './actions';
+import { CreateBreak, DeleteExtraBreaks, EditBreak } from './actions';
+
+type Break = {
+    id: number;
+    session_id: number;
+    name: string;
+    length: number;
+    created_at: string;
+    order: number;
+};
+
+type SessionsBreaks = {
+    breaks: Break[];
+    session: {
+        id: number;
+        user_id: number;
+        created_at: string;
+        name: string;
+        break_interval: number;
+        length: number;
+        minutes_worked: number | null;
+    };
+};
 
 type Props = {
     onBack?: () => void;
@@ -6,6 +28,7 @@ type Props = {
     breakTime: number;
     sessionId: number;
     onClose?: () => void;
+    breaksData?: SessionsBreaks['breaks'];
 };
 
 export default function ModalPage2({
@@ -13,19 +36,39 @@ export default function ModalPage2({
     breakTime,
     sessionId,
     onClose,
+    breaksData,
 }: Props) {
     if (!breaks) return;
 
-    // function handleBack() {
-    //     if (onBack) {
-    //         onBack();
-    //     }
-    // }
-
     function handleSubmit(formData: FormData) {
-        Array.from({ length: breaks }, (_, i) =>
-            CreateBreak(formData, sessionId, i + 1)
-        );
+        if (breaksData) {
+            // Päivitä vain olemassa olevat breikit
+            Array.from(
+                { length: Math.min(breaks, breaksData.length) },
+                (_, i) => {
+                    EditBreak(formData, breaksData[i].session_id, i + 1);
+                }
+            );
+
+            // Lisää uudet breikit, jos niitä tarvitaan
+            if (breaks > breaksData.length) {
+                Array.from({ length: breaks - breaksData.length }, (_, i) => {
+                    const newIndex = breaksData.length + i + 1;
+                    CreateBreak(formData, breaksData[0].session_id, newIndex);
+                });
+            }
+
+            // Poista ylimääräiset, jos käyttäjä vähensi määrää
+            if (breaks < breaksData.length) {
+                DeleteExtraBreaks(breaksData[0].session_id, breaks);
+            }
+        } else {
+            // Jos ei ole aiempaa dataa, luodaan kaikki breikit
+            Array.from({ length: breaks }, (_, i) => {
+                CreateBreak(formData, sessionId, i + 1);
+            });
+        }
+
         onClose?.();
     }
 

@@ -3,6 +3,7 @@
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { DeleteSession } from './actions';
+import Modal from './modal';
 
 type Break = {
     id: number;
@@ -32,12 +33,13 @@ export default function RealtimeSessionsBreaks({
     sessionBreaks: SessionsBreaks[];
 }) {
     const [data, setData] = useState(sessionBreaks);
+    const [selectedSession, setSelectedSession] =
+        useState<SessionsBreaks | null>(null);
+    const [showModal, setShowModal] = useState(false);
 
     const supabase = createClient();
 
     async function fetchSessionsAndBreaks() {
-        // Esim. tee fetch tähän API:lla tai suoraan supabasen queryllä
-        // Esimerkkihaku voi olla jotain tällaista:
         const { data: freshSessions, error } = await supabase
             .from('workSession')
             .select(`*, Break(*)`)
@@ -67,7 +69,6 @@ export default function RealtimeSessionsBreaks({
     }
 
     useEffect(() => {
-        console.log('Subscribing to Supabase Realtime...');
         const channel = supabase.channel('realtime sessions');
 
         // Kutsu aina fetchia kun data muuttuu
@@ -86,17 +87,13 @@ export default function RealtimeSessionsBreaks({
                 { event: '*', schema: 'public', table: 'workSession' },
                 handler
             )
-            .subscribe((status) => {
-                console.log('Channel status:', status);
-            });
+            .subscribe();
 
         return () => {
-            console.log('Unsubscribing Supabase Realtime...');
             supabase.removeChannel(channel);
         };
     }, []);
 
-    // Apufunktiot
     function toHours(totalMinutes: number) {
         const length = totalMinutes / 60;
         const hours = Math.floor(totalMinutes / 60);
@@ -125,6 +122,13 @@ export default function RealtimeSessionsBreaks({
 
     return (
         <main>
+            {showModal && selectedSession && (
+                <Modal
+                    sessionData={selectedSession}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
+
             {data
                 .filter((item) => item.breaks.length > 0)
                 .map((item, i) => (
@@ -140,6 +144,10 @@ export default function RealtimeSessionsBreaks({
                                 <p>created at:</p>
                                 <p>{formatDate(item.session.created_at)}</p>
                             </div>
+                            <p className="text-sm text-gray-500 pb-3">
+                                Break every{' '}
+                                {toHours(item.session.break_interval)}
+                            </p>
                             <h2 className="font-semibold text-md text-gray-900">
                                 Breaks
                             </h2>
@@ -158,53 +166,60 @@ export default function RealtimeSessionsBreaks({
 
                             <div className="flex justify-around items-center py-3">
                                 <div className="flex gap-2 text-gray-600 hover:scale-110 duration-200 hover:cursor-pointer">
-                                    <svg
-                                        className="w-6 stroke-green-700"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                                    <button
+                                        className="font-semibold text-sm text-green-700 hover:cursor-pointer flex gap-1 items-center"
+                                        onClick={() => {
+                                            setSelectedSession(item);
+                                            setShowModal(true);
+                                        }}
                                     >
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>
-                                    <button className="font-semibold text-sm text-green-700 hover:cursor-pointer">
+                                        <svg
+                                            className="w-6 stroke-green-700"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
                                         Edit
                                     </button>
                                 </div>
+
                                 <div className="flex gap-2 text-gray-600 hover:scale-110 duration-200 hover:cursor-pointer">
-                                    <svg
-                                        className="w-6 stroke-red-700"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        <line
-                                            x1="10"
-                                            y1="11"
-                                            x2="10"
-                                            y2="17"
-                                        ></line>
-                                        <line
-                                            x1="14"
-                                            y1="11"
-                                            x2="14"
-                                            y2="17"
-                                        ></line>
-                                    </svg>
                                     <button
-                                        className="font-semibold text-sm text-red-700 hover:cursor-pointer"
+                                        className="font-semibold text-sm text-red-700 hover:cursor-pointer flex gap-1 items-center"
                                         onClick={() =>
                                             DeleteSession(item.session.id)
                                         }
                                     >
+                                        <svg
+                                            className="w-6 stroke-red-700"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            <line
+                                                x1="10"
+                                                y1="11"
+                                                x2="10"
+                                                y2="17"
+                                            ></line>
+                                            <line
+                                                x1="14"
+                                                y1="11"
+                                                x2="14"
+                                                y2="17"
+                                            ></line>
+                                        </svg>
                                         Delete
                                     </button>
                                 </div>

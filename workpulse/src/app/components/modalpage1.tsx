@@ -1,13 +1,36 @@
 'use client';
 
-import { useState } from 'react';
-import { CreateWorkSession } from './actions';
+import { useEffect, useState } from 'react';
+import { CreateWorkSession, EditWorkSession } from './actions';
+
+type Break = {
+    id: number;
+    session_id: number;
+    name: string;
+    length: number;
+    created_at: string;
+    order: number;
+};
+
+type SessionsBreaks = {
+    breaks: Break[];
+    session: {
+        id: number;
+        user_id: number;
+        created_at: string;
+        name: string;
+        break_interval: number;
+        length: number;
+        minutes_worked: number | null;
+    };
+};
 
 type Props = {
     onNext: (breaks: number, breakTime: number, sessionId: number) => void;
+    sessionData?: SessionsBreaks['session'];
 };
 
-export default function ModalPage1({ onNext }: Props) {
+export default function ModalPage1({ sessionData, onNext }: Props) {
     const [breakTime, setBreakTime] = useState('');
     const [lengthHours, setLengthHours] = useState('');
     const [lengthMinutes, setLengthMinutes] = useState('');
@@ -18,6 +41,15 @@ export default function ModalPage1({ onNext }: Props) {
 
     const totalLength: number =
         Number(lengthHours) * 60 + Number(lengthMinutes);
+
+    useEffect(() => {
+        if (sessionData) {
+            setLengthHours(Math.floor(sessionData.length / 60).toString());
+            setLengthMinutes((sessionData.length % 60).toString());
+            setBreakTime(sessionData.break_interval.toString());
+            console.log(sessionData);
+        }
+    }, [sessionData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -33,7 +65,17 @@ export default function ModalPage1({ onNext }: Props) {
     };
 
     async function handleSubmit(formData: FormData) {
-        const sessionId = await CreateWorkSession(formData, totalLength);
+        let sessionId;
+
+        if (sessionData) {
+            sessionId = await EditWorkSession(
+                formData,
+                totalLength,
+                sessionData.id
+            );
+        } else {
+            sessionId = await CreateWorkSession(formData, totalLength);
+        }
         onNext(breaks, Number(breakTime), sessionId);
     }
     return (
@@ -50,6 +92,7 @@ export default function ModalPage1({ onNext }: Props) {
                     type="text"
                     name="name"
                     id="name"
+                    defaultValue={sessionData?.name ?? ''}
                     required
                 />
             </div>
@@ -69,8 +112,8 @@ export default function ModalPage1({ onNext }: Props) {
                         id="hours"
                         type="text"
                         placeholder="Hours"
-                        max="10"
                         value={lengthHours}
+                        max="10"
                         onChange={handleChange}
                         required
                     />
@@ -83,6 +126,7 @@ export default function ModalPage1({ onNext }: Props) {
                         value={lengthMinutes}
                         onChange={handleChange}
                         max="59"
+                        min="30"
                         required
                     />
                 </div>
@@ -100,9 +144,10 @@ export default function ModalPage1({ onNext }: Props) {
                     name="breakInterval"
                     id="breakInterval"
                     required
+                    value={breakTime}
                     onChange={(e) => setBreakTime(e.target.value)}
                 >
-                    <option value="" disabled hidden>
+                    <option value="" hidden>
                         Select your option
                     </option>
                     <option value="5">5 minutes</option>

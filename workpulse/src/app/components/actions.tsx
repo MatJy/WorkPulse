@@ -61,8 +61,10 @@ export async function CreateWorkSession(formData: FormData, props: number) {
 export async function FetchSessionsWithBreaks() {
     const supabase = await createClient();
 
-    const { data: sessions } = await supabase.from('workSession').select();
-
+    const { data: sessions } = await supabase
+        .from('workSession')
+        .select()
+        .order('created_at', { ascending: false });
     if (!sessions) return [];
 
     const result = [];
@@ -79,7 +81,7 @@ export async function FetchSessionsWithBreaks() {
     return result;
 }
 
-export async function UpdateWorkSession(
+export async function EditWorkSession(
     formData: FormData,
     totalLength: number,
     session_id: number
@@ -91,7 +93,7 @@ export async function UpdateWorkSession(
     } = await supabase.auth.getUser();
 
     const name = formData.get('name');
-    const break_interval = Number(formData.get('break'));
+    const break_interval = Number(formData.get('breakInterval'));
     const length = totalLength;
 
     if (!user) return;
@@ -104,7 +106,13 @@ export async function UpdateWorkSession(
             break_interval: break_interval,
             length: length,
         })
-        .eq('id', session_id);
+        .eq('id', session_id)
+        .select('id')
+        .single();
+
+    if (data) {
+        return data.id;
+    }
 }
 
 export async function DeleteSession(session_id: number) {
@@ -120,6 +128,29 @@ export async function DeleteSession(session_id: number) {
         .from('workSession')
         .delete()
         .eq('id', session_id);
+
+    if (sessionError) {
+        console.error('Supabase delete error:', sessionError?.message);
+    }
+}
+
+export async function DeleteExtraBreaks(
+    session_id: number,
+    allowedBreaks: number
+) {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { error: sessionError } = await supabase
+        .from('Break')
+        .delete()
+        .eq('session_id', session_id)
+        .gt('"order"', allowedBreaks);
 
     if (sessionError) {
         console.error('Supabase delete error:', sessionError?.message);
@@ -152,5 +183,37 @@ export async function CreateBreak(
 
     if (error) {
         console.error('Supabase insert error:', error.message);
+    }
+}
+export async function EditBreak(
+    formData: FormData,
+    session_id: number,
+    order: number
+) {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    const name = formData.get(`name${order}`);
+    const breakLength = formData.get(`length${order}`);
+
+    if (!user) return;
+
+    const { data, error } = await supabase
+        .from('Break')
+        .update({
+            session_id: session_id,
+            user_id: user.id,
+            name: name,
+            length: breakLength,
+            order: order,
+        })
+        .eq('session_id', session_id)
+        .eq('"order"', order);
+
+    if (error) {
+        console.error('Supabase update error:', error.message);
     }
 }
