@@ -1,8 +1,9 @@
+import Link from 'next/link';
 import { login } from './actions';
 
 export default function Login() {
     return (
-        <main>
+        <main className="min-h-screen bg-gradient-to-br from-sky-100 to-blue-200">
             <div className="flex flex-col items-center justify-center h-screen">
                 <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -48,6 +49,15 @@ export default function Login() {
                             Login
                         </button>
                     </form>
+
+                    <div className="pt-4 text-center">
+                        <Link
+                            href="/"
+                            className="text-sm text-sky-600 hover:underline"
+                        >
+                            ← Back to home
+                        </Link>
+                    </div>
                 </div>
             </div>
         </main>

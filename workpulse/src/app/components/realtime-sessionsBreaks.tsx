@@ -132,42 +132,60 @@ export default function RealtimeSessionsBreaks({
             {data
                 .filter((item) => item.breaks.length > 0)
                 .map((item, i) => (
-                    <div key={i} className="p-2">
-                        <div className="flex flex-col bg-white max-w-100 rounded-md py-3 px-6 border">
-                            <h3 className="text-base font-semibold text-gray-900">
-                                {item.session.name}
-                            </h3>
-                            <p className="text-sm text-gray-500 pb-3">
-                                Length: {toHours(item.session.length)}
-                            </p>
-                            <div className="flex gap-2 text-sm text-gray-500 pb-2">
-                                <p>created at:</p>
-                                <p>{formatDate(item.session.created_at)}</p>
-                            </div>
-                            <p className="text-sm text-gray-500 pb-3">
-                                Break every{' '}
-                                {toHours(item.session.break_interval)}
-                            </p>
-                            <h2 className="font-semibold text-md text-gray-900">
-                                Breaks
-                            </h2>
-                            <div className="border-b">
-                                {item.breaks.map((brk, j) => (
-                                    <div key={j}>
-                                        <p className="text-sm text-gray-500">
-                                            Break {j + 1}: {brk.name}
-                                        </p>
-                                        <p className="text-sm text-gray-500 pb-3">
-                                            Length: {brk.length} min
-                                        </p>
-                                    </div>
-                                ))}
+                    <div key={i} className="p-4">
+                        <div className="bg-white shadow-md hover:shadow-lg transition rounded-xl border border-gray-200 p-6 max-w-xl  space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-xl font-semibold text-sky-800">
+                                    {item.session.name}
+                                </h3>
+                                <p className="text-sm text-gray-400">
+                                    {formatDate(item.session.created_at)}
+                                </p>
                             </div>
 
-                            <div className="flex justify-around items-center py-3">
-                                <div className="flex gap-2 text-gray-600 hover:scale-110 duration-200 hover:cursor-pointer">
+                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                <div>
+                                    <p className="font-medium text-gray-800">
+                                        Session length
+                                    </p>
+                                    <p>{toHours(item.session.length)}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-gray-800">
+                                        Break every
+                                    </p>
+                                    <p>
+                                        {toHours(item.session.break_interval)}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold text-md text-gray-800 mb-2">
+                                    Breaks
+                                </h4>
+                                <div className="divide-y border rounded-md">
+                                    {item.breaks.map((brk, j) => (
+                                        <div key={j} className="p-2">
+                                            <p className="text-gray-700 font-medium">
+                                                Break {j + 1}: {brk.name}
+                                            </p>
+                                            <p className="text-sm text-gray-500">
+                                                Length: {brk.length} min
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center pt-4">
+                                <button className="bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold px-4 py-2 rounded-md transition cursor-pointer">
+                                    Start session
+                                </button>
+
+                                <div className="flex gap-4">
                                     <button
-                                        className="font-semibold text-sm text-green-700 hover:cursor-pointer flex gap-1 items-center"
+                                        className="font-semibold text-sm text-green-700 flex gap-1 items-center hover:scale-105 transition"
                                         onClick={() => {
                                             setSelectedSession(item);
                                             setShowModal(true);
@@ -187,11 +205,9 @@ export default function RealtimeSessionsBreaks({
                                         </svg>
                                         Edit
                                     </button>
-                                </div>
 
-                                <div className="flex gap-2 text-gray-600 hover:scale-110 duration-200 hover:cursor-pointer">
                                     <button
-                                        className="font-semibold text-sm text-red-700 hover:cursor-pointer flex gap-1 items-center"
+                                        className="font-semibold text-sm text-red-700 flex gap-1 items-center hover:scale-105 transition"
                                         onClick={() =>
                                             DeleteSession(item.session.id)
                                         }

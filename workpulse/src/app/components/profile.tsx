@@ -109,7 +109,7 @@ export default async function Profile() {
 
                 <a
                     onClick={signOut}
-                    className="group relative flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-red-50 transition-all duration-200"
+                    className="group relative flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-red-50 transition-all duration-200 cursor-pointer"
                 >
                     <div className="absolute left-0 top-0 h-full w-1 bg-red-500 rounded-r opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:scale-y-100 scale-y-80"></div>
                     <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center mr-3 group-hover:bg-red-200 transition-colors duration-200">
@@ -126,7 +126,7 @@ export default async function Profile() {
                             ></path>
                         </svg>
                     </div>
-                    <button className="font-medium text-gray-700 group-hover:text-red-600">
+                    <button className="font-medium text-gray-700 group-hover:text-red-600 cursor-pointer">
                         Logout
                     </button>
                     <svg

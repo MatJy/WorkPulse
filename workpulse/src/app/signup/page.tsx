@@ -1,81 +1,85 @@
+import Link from 'next/link';
 import { signup } from './actions';
 
 export default function SignUp() {
     return (
-        <div className="">
-            <section className="rounded-md p-2 bg-white">
-                <div className="flex items-center justify-center h-screen my-3">
-                    <div className="xl:mx-auto shadow-md p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
-                        <div className="mb-2"></div>
-                        <h2 className="text-2xl font-bold leading-tight">
-                            Sign up to create account
-                        </h2>
-                        <p className="mt-2 text-base text-gray-600">
-                            Already have an account?{' '}
-                            <a href="/login" className="text-blue-500">
-                                Login
-                            </a>
-                        </p>
-                        <form className="mt-5">
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-base font-medium text-gray-900">
-                                        Username
-                                    </label>
-                                    <div className="mt-2">
-                                        <input
-                                            id="username"
-                                            placeholder="Name"
-                                            type="text"
-                                            className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                                            name="username"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="text-base font-medium text-gray-900">
-                                        Email address
-                                    </label>
-                                    <div className="mt-2">
-                                        <input
-                                            placeholder="Email"
-                                            type="email"
-                                            className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                                            name="email"
-                                            id="email"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-base font-medium text-gray-900">
-                                            Password
-                                        </label>
-                                    </div>
-                                    <div className="mt-2">
-                                        <input
-                                            placeholder="Password"
-                                            type="password"
-                                            className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                                            name="password"
-                                            id="password"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <button
-                                        type="submit"
-                                        formAction={signup}
-                                        className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
-                                    >
-                                        Sign up
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+        <main className="min-h-screen bg-gradient-to-br from-sky-100 to-blue-200 flex items-center justify-center px-4">
+            <div className="w-full max-w-md bg-white rounded-xl shadow-md p-6 space-y-6">
+                <h2 className="text-2xl font-bold leading-tight text-center text-sky-800">
+                    Sign up to create an account
+                </h2>
+                <p className="text-center text-base text-gray-600">
+                    Already have an account?{' '}
+                    <a href="/login" className="text-blue-500 hover:underline">
+                        Log in
+                    </a>
+                </p>
+
+                <form className="space-y-4" action={signup}>
+                    <div>
+                        <label
+                            htmlFor="username"
+                            className="text-sm font-medium text-gray-900"
+                        >
+                            Username
+                        </label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            placeholder="Your name"
+                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            required
+                        />
                     </div>
+                    <div>
+                        <label
+                            htmlFor="email"
+                            className="text-sm font-medium text-gray-900"
+                        >
+                            Email address
+                        </label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="you@example.com"
+                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label
+                            htmlFor="password"
+                            className="text-sm font-medium text-gray-900"
+                        >
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="********"
+                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            required
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:opacity-90 transition"
+                    >
+                        Sign up
+                    </button>
+                </form>
+                <div className="pt-4 text-center">
+                    <Link
+                        href="/"
+                        className="text-sm text-sky-600 hover:underline"
+                    >
+                        ← Back to home
+                    </Link>
                 </div>
-            </section>
-        </div>
+            </div>
+        </main>
     );
 }

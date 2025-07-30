@@ -1,9 +1,7 @@
 import { signOut } from '../logout/actions';
-import ShowModal from '../components/showModal';
 import Profile from '../components/profile';
 import { FetchSessionsWithBreaks } from '../components/actions';
 import RealtimeSessionsBreaks from '../components/realtime-sessionsBreaks';
-import ClientHome from '../components/homeClient';
 import PortalModal from '../components/showModal';
 
 export default async function Home() {

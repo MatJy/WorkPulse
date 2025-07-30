@@ -44,7 +44,7 @@ export default function Modal({ sessionData, onClose }: ModalProps) {
 
     function CloseModal() {
         onClose?.();
-        if (sessionId) {
+        if (sessionId && !sessionData) {
             DeleteSession(sessionId);
             handleBack();
         }
