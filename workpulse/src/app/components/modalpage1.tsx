@@ -2,28 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { CreateWorkSession, EditWorkSession } from './actions';
-
-type Break = {
-    id: number;
-    session_id: number;
-    name: string;
-    length: number;
-    created_at: string;
-    order: number;
-};
-
-type SessionsBreaks = {
-    breaks: Break[];
-    session: {
-        id: number;
-        user_id: number;
-        created_at: string;
-        name: string;
-        break_interval: number;
-        length: number;
-        minutes_worked: number | null;
-    };
-};
+import { SessionsBreaks } from '../types';
 
 type Props = {
     onNext: (breaks: number, breakTime: number, sessionId: number) => void;
@@ -47,7 +26,6 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
             setLengthHours(Math.floor(sessionData.length / 60).toString());
             setLengthMinutes((sessionData.length % 60).toString());
             setBreakTime(sessionData.break_interval.toString());
-            console.log(sessionData);
         }
     }, [sessionData]);
 
@@ -162,7 +140,7 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
 
             <div className="flex justify-end space-x-2">
                 <button
-                    className="[background:linear-gradient(144deg,#af40ff,#5b42f3_50%,#00ddeb)] text-white px-4 py-2 font-bold rounded-md hover:opacity-80"
+                    className="[background:linear-gradient(144deg,#af40ff,#5b42f3_50%,#00ddeb)] text-white px-4 py-2 font-bold rounded-md hover:opacity-80 cursor-pointer"
                     type="submit"
                     formAction={handleSubmit}
                 >

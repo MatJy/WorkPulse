@@ -1,7 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-
 export default function Home() {
     return (
         <main className="min-h-screen bg-gradient-to-br from-sky-100 to-blue-200 flex items-center justify-center px-4">
@@ -16,19 +14,19 @@ export default function Home() {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6">
-                    <Link
+                    <a
                         href="/signup"
                         className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold py-2 px-6 rounded-lg shadow hover:scale-105 transition"
                     >
                         Sign Up
-                    </Link>
+                    </a>
 
-                    <Link
+                    <a
                         href="/login"
                         className="border border-sky-500 text-sky-700 hover:bg-sky-100 font-semibold py-2 px-6 rounded-lg shadow hover:scale-105 transition"
                     >
                         Log In
-                    </Link>
+                    </a>
                 </div>
 
                 <div className="pt-4">

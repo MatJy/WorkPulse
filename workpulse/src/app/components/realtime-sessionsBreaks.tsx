@@ -4,28 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { DeleteSession } from './actions';
 import Modal from './modal';
-
-type Break = {
-    id: number;
-    session_id: number;
-    name: string;
-    length: number;
-    created_at: string;
-    order: number;
-};
-
-type SessionsBreaks = {
-    breaks: Break[];
-    session: {
-        id: number;
-        user_id: number;
-        created_at: string;
-        name: string;
-        break_interval: number;
-        length: number;
-        minutes_worked: number | null;
-    };
-};
+import { SessionsBreaks } from '../types';
 
 export default function RealtimeSessionsBreaks({
     sessionBreaks,
@@ -158,6 +137,18 @@ export default function RealtimeSessionsBreaks({
                                         {toHours(item.session.break_interval)}
                                     </p>
                                 </div>
+                                <div>
+                                    <p className="font-medium text-gray-800">
+                                        Time worked
+                                    </p>
+                                    <p>
+                                        {item.session.minutes_worked != null
+                                            ? toHours(
+                                                  item.session.minutes_worked
+                                              )
+                                            : 0}
+                                    </p>
+                                </div>
                             </div>
 
                             <div>
@@ -178,14 +169,16 @@ export default function RealtimeSessionsBreaks({
                                 </div>
                             </div>
 
-                            <div className="flex justify-between items-center pt-4">
-                                <button className="bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold px-4 py-2 rounded-md transition cursor-pointer">
-                                    Start session
-                                </button>
+                            <div className="md:flex justify-between items-center pt-4">
+                                <a href={`/session/${item.session.id}`}>
+                                    <button className="[background:linear-gradient(144deg,#af40ff,#5b42f3_50%,#00ddeb)] text-white px-4 py-2 font-bold rounded-md hover:opacity-80 cursor-pointer">
+                                        Start session
+                                    </button>
+                                </a>
 
-                                <div className="flex gap-4">
+                                <div className="flex gap-4 pt-5">
                                     <button
-                                        className="font-semibold text-sm text-green-700 flex gap-1 items-center hover:scale-105 transition"
+                                        className="font-semibold text-sm text-green-700 flex gap-1 items-center hover:scale-105 transition cursor-pointer"
                                         onClick={() => {
                                             setSelectedSession(item);
                                             setShowModal(true);
@@ -207,7 +200,7 @@ export default function RealtimeSessionsBreaks({
                                     </button>
 
                                     <button
-                                        className="font-semibold text-sm text-red-700 flex gap-1 items-center hover:scale-105 transition"
+                                        className="font-semibold text-sm text-red-700 flex gap-1 items-center hover:scale-105 transition cursor-pointer"
                                         onClick={() =>
                                             DeleteSession(item.session.id)
                                         }
