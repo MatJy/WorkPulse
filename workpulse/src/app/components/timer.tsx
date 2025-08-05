@@ -1,15 +1,17 @@
-'use client';
 import { useEffect, useState } from 'react';
 
-type TimerProps = {
-    initialMinutes: number;
+type Prop = {
+    time: number;
+    onTick?: (secondsLeft: number) => void;
 };
 
-const Timer = ({ initialMinutes }: TimerProps) => {
-    const [totalSeconds, setTotalSeconds] = useState(initialMinutes * 60);
+export default function Timer({ time, onTick }: Prop) {
+    const [totalSeconds, setTotalSeconds] = useState(time * 60);
 
     useEffect(() => {
-        if (totalSeconds <= 0) return;
+        if (totalSeconds <= 0) {
+            setTotalSeconds(time * 60);
+        }
 
         const interval = setInterval(() => {
             setTotalSeconds((prev) => prev - 1);
@@ -17,6 +19,10 @@ const Timer = ({ initialMinutes }: TimerProps) => {
 
         return () => clearInterval(interval);
     }, [totalSeconds]);
+
+    useEffect(() => {
+        onTick?.(totalSeconds);
+    }, [totalSeconds, onTick]);
 
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -28,59 +34,61 @@ const Timer = ({ initialMinutes }: TimerProps) => {
 
     const counterLabel = `${paddedHours} hours ${paddedMinutes} minutes ${paddedSeconds} seconds`;
 
-    if (totalSeconds <= 0) {
-        return <div className="p-4 text-center">⏱️ Time&apos;s up!</div>;
-    }
-
     return (
-        <div
-            className="grid grid-flow-col gap-5 text-center auto-cols-max p-2"
-            aria-label={counterLabel}
-        >
-            <div className="flex flex-col p-2 bg-black rounded-md text-neutral-content text-white text-7xl">
-                <span className="countdown font-mono text-9xl">
-                    <span
-                        style={
-                            { '--value': paddedHours } as React.CSSProperties
-                        }
-                        aria-live="polite"
-                        aria-label={`${paddedHours} hours`}
-                    >
-                        {paddedHours}
+        <main className="">
+            <div
+                className="grid grid-flow-col gap-5 text-center auto-cols-max p-2"
+                aria-label={counterLabel}
+            >
+                <div className="flex flex-col p-2 bg-black rounded-md text-neutral-content text-white md:text-7xl text-3xl">
+                    <span className="countdown font-mono md:text-9xl text-5xl">
+                        <span
+                            style={
+                                {
+                                    '--value': paddedHours,
+                                } as React.CSSProperties
+                            }
+                            aria-live="polite"
+                            aria-label={`${paddedHours} hours`}
+                        >
+                            {paddedHours}
+                        </span>
                     </span>
-                </span>
-                hours
-            </div>
-            <div className="flex flex-col p-2 bg-black rounded-md text-neutral-content text-white text-7xl">
-                <span className="countdown font-mono text-9xl">
-                    <span
-                        style={
-                            { '--value': paddedMinutes } as React.CSSProperties
-                        }
-                        aria-live="polite"
-                        aria-label={`${paddedMinutes} minutes`}
-                    >
-                        {paddedMinutes}
+                    hours
+                </div>
+                <div className="flex flex-col p-2 bg-black rounded-md text-neutral-content text-white md:text-7xl text-3xl">
+                    <span className="countdown font-mono md:text-9xl text-5xl">
+                        <span
+                            style={
+                                {
+                                    '--value': paddedMinutes,
+                                } as React.CSSProperties
+                            }
+                            aria-live="polite"
+                            aria-label={`${paddedMinutes} minutes`}
+                        >
+                            {paddedMinutes}
+                        </span>
                     </span>
-                </span>
-                min
-            </div>
-            <div className="flex flex-col p-2 bg-black rounded-md text-neutral-content text-white text-7xl">
-                <span className="countdown font-mono text-9xl">
-                    <span
-                        style={
-                            { '--value': paddedSeconds } as React.CSSProperties
-                        }
-                        aria-live="polite"
-                        aria-label={`${paddedSeconds} seconds`}
-                    >
-                        {paddedSeconds}
+                    min
+                </div>
+                <div className="flex flex-col p-2 bg-black rounded-md text-neutral-content text-white md:text-7xl text-3xl">
+                    <span className="countdown font-mono md:text-9xl text-5xl">
+                        <span
+                            style={
+                                {
+                                    '--value': paddedSeconds,
+                                } as React.CSSProperties
+                            }
+                            aria-live="polite"
+                            aria-label={`${paddedSeconds} seconds`}
+                        >
+                            {paddedSeconds}
+                        </span>
                     </span>
-                </span>
-                sec
+                    sec
+                </div>
             </div>
-        </div>
+        </main>
     );
-};
-
-export default Timer;
+}

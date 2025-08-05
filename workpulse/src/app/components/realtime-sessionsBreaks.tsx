@@ -78,7 +78,7 @@ export default function RealtimeSessionsBreaks({
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
         if (Number.isInteger(length)) {
-            if (hours > 1) {
+            if (hours > 1 || hours === 0) {
                 return length + ' hours';
             }
             return length + ' hour';
