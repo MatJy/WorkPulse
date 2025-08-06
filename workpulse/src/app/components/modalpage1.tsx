@@ -14,8 +14,12 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
     const [lengthHours, setLengthHours] = useState('');
     const [lengthMinutes, setLengthMinutes] = useState('');
 
-    const breaks: number = Math.floor(
-        (Number(lengthHours) * 60 + Number(lengthMinutes)) / Number(breakTime)
+    const breaks: number = Math.max(
+        0,
+        Math.floor(
+            (Number(lengthHours) * 60 + Number(lengthMinutes)) /
+                Number(breakTime)
+        ) - 1
     );
 
     const totalLength: number =

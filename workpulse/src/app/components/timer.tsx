@@ -37,7 +37,7 @@ export default function Timer({ time, onTick }: Prop) {
     return (
         <main className="">
             <div
-                className="grid grid-flow-col gap-5 text-center auto-cols-max p-2"
+                className="grid grid-flow-col gap-5 text-center auto-cols-max p-2 justify-center"
                 aria-label={counterLabel}
             >
                 <div className="flex flex-col p-2 bg-black rounded-md text-neutral-content text-white md:text-7xl text-3xl">

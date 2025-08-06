@@ -10,6 +10,6 @@ export function showNotification(title: string) {
         Notification.permission === 'granted' ||
         Notification.permission === 'default'
     ) {
-        new Notification('Break Time! ' + title);
+        new Notification(title);
     }
 }
