@@ -13,6 +13,7 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
     const [breakTime, setBreakTime] = useState('');
     const [lengthHours, setLengthHours] = useState('');
     const [lengthMinutes, setLengthMinutes] = useState('');
+    const [optionValues, setOptionValues] = useState(['']);
 
     const breaks: number = Math.max(
         0,
@@ -26,12 +27,27 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
         Number(lengthHours) * 60 + Number(lengthMinutes);
 
     useEffect(() => {
+        const total: number = Number(lengthHours) * 60 + Number(lengthMinutes);
+
+        if (total <= 60 && total > 30) {
+            setOptionValues(['10', '15']);
+        } else if (total > 60 && total <= 90) {
+            setOptionValues(['15', '30']);
+        } else if (total > 90 && total <= 120) {
+            setOptionValues(['30', '60']);
+        } else if (total > 120 && total <= 300) {
+            setOptionValues(['30', '60', '90', '120']);
+        } else if (total > 120) {
+            setOptionValues(['60', '90', '120']);
+        } else if (total === 30) {
+            setOptionValues(['10', '15']);
+        }
         if (sessionData) {
             setLengthHours(Math.floor(sessionData.length / 60).toString());
             setLengthMinutes((sessionData.length % 60).toString());
             setBreakTime(sessionData.break_interval.toString());
         }
-    }, [sessionData]);
+    }, [sessionData, lengthHours, lengthMinutes]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -92,23 +108,22 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
                         className="mt-1 p-2 w-full border rounded-md"
                         name="hours"
                         id="hours"
-                        type="text"
+                        type="number"
                         placeholder="Hours"
                         value={lengthHours}
-                        max="10"
+                        max={10}
                         onChange={handleChange}
-                        required
                     />
                     <input
                         className="mt-1 p-2 w-full border rounded-md"
                         name="minutes"
                         id="minutes"
-                        type="text"
+                        type="number"
                         placeholder="Minutes"
                         value={lengthMinutes}
                         onChange={handleChange}
-                        max="59"
-                        min="30"
+                        max={59}
+                        min={totalLength < 60 ? 30 : 0}
                         required
                     />
                 </div>
@@ -122,23 +137,19 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
                     Break every:
                 </label>
                 <select
-                    className="mt-1 p-2 w-full border rounded-md"
-                    name="breakInterval"
-                    id="breakInterval"
-                    required
                     value={breakTime}
                     onChange={(e) => setBreakTime(e.target.value)}
+                    className="mt-1 p-2 w-full border rounded-md"
+                    required
                 >
                     <option value="" hidden>
-                        Select your option
+                        Select break interval
                     </option>
-                    <option value="5">5 minutes</option>
-                    <option value="10">10 minutes</option>
-                    <option value="15">15 minutes</option>
-                    <option value="30">30 minutes</option>
-                    <option value="60">1 hour</option>
-                    <option value="90">1 hour 30 minutes</option>
-                    <option value="120">2 hours</option>
+                    {optionValues.map((value) => (
+                        <option key={value} value={value}>
+                            {value} min
+                        </option>
+                    ))}
                 </select>
             </div>
 

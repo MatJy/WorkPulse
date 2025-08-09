@@ -39,10 +39,6 @@ export default function BreakTimers({
         }
     }, [isBreak, breakSecondsLeft, breakInterval, breakLength]);
 
-    useEffect(() => {
-        console.log('isBreak state updated:', isBreak);
-    }, [isBreak]);
-
     if (currentBreak === undefined) {
         return (
             <main className="pt-10 text-center">

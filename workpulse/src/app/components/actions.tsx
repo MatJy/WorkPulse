@@ -75,7 +75,12 @@ export async function FetchSessionsWithBreaks() {
             .select()
             .eq('session_id', session.id);
 
-        result.push({ session, breaks: breaks || [] });
+        const { data: logs } = await supabase
+            .from('work_logs')
+            .select()
+            .eq('session_id', session.id);
+
+        result.push({ session, breaks: breaks || [], logs: logs || [] });
     }
 
     return result;
@@ -215,5 +220,54 @@ export async function EditBreak(
 
     if (error) {
         console.error('Supabase update error:', error.message);
+    }
+}
+
+export async function CreateWorkLog(sessionId: number) {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } = await supabase
+        .from('work_logs')
+        .insert({
+            user_id: user.id,
+            session_id: sessionId,
+        })
+        .select('id')
+        .single();
+
+    if (data) {
+        return data.id;
+    }
+
+    if (error) {
+        console.error('Failed to create work log:', error);
+    }
+}
+
+export async function CreateWorkLogEnded(logId: number) {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const now = new Date();
+    const utcPlus3 = new Date(now.getTime() + 3 * 60 * 60 * 1000); // +3 tuntia millisekunteina
+
+    const { data, error } = await supabase
+        .from('work_logs')
+        .update({ ended_at: utcPlus3.toISOString() })
+        .eq('id', logId);
+
+    if (error) {
+        console.error('Failed to update work log:', error.message);
     }
 }

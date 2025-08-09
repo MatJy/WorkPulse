@@ -7,8 +7,17 @@ export type Break = {
     order: number;
 };
 
+export type Logs = {
+    id: number;
+    session_id: number;
+    started_at: string;
+    ended_at: string;
+    duration: number;
+};
+
 export type SessionsBreaks = {
     breaks: Break[];
+    logs: Logs[];
     session: {
         id: number;
         user_id: number;

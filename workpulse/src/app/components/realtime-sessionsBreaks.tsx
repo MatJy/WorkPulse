@@ -2,9 +2,11 @@
 
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
-import { DeleteSession } from './actions';
+import { CreateWorkLog, DeleteSession } from './actions';
 import Modal from './modal';
 import { SessionsBreaks } from '../types';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function RealtimeSessionsBreaks({
     sessionBreaks,
@@ -18,10 +20,23 @@ export default function RealtimeSessionsBreaks({
 
     const supabase = createClient();
 
+    const router = useRouter();
+
+    async function handleStartSession(sessionId: number) {
+        try {
+            const newLogId = await CreateWorkLog(sessionId);
+            // Jos CreateWorkLog palauttaa logId:n, ohjataan sen session sivulle:
+            router.push(`/session/${sessionId}`);
+        } catch (error) {
+            console.error('Failed to create work log:', error);
+            // Halutessasi näytä virheilmoitus käyttäjälle
+        }
+    }
+
     async function fetchSessionsAndBreaks() {
         const { data: freshSessions, error } = await supabase
             .from('workSession')
-            .select(`*, Break(*)`)
+            .select(`*, Break(*), work_logs(*)`)
             .order('created_at', { ascending: false });
 
         if (!error && freshSessions) {
@@ -38,6 +53,7 @@ export default function RealtimeSessionsBreaks({
                         minutes_worked: session.minutes_worked,
                     },
                     breaks: session.Break || [],
+                    logs: session.work_logs || [],
                 })
             );
 
@@ -66,12 +82,17 @@ export default function RealtimeSessionsBreaks({
                 { event: '*', schema: 'public', table: 'workSession' },
                 handler
             )
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'work_logs' },
+                handler
+            )
             .subscribe();
 
         return () => {
             supabase.removeChannel(channel);
         };
-    }, []);
+    });
 
     function toHours(totalMinutes: number) {
         const length = totalMinutes / 60;
@@ -170,11 +191,14 @@ export default function RealtimeSessionsBreaks({
                             </div>
 
                             <div className="md:flex justify-between items-center pt-4">
-                                <a href={`/session/${item.session.id}`}>
-                                    <button className="[background:linear-gradient(144deg,#af40ff,#5b42f3_50%,#00ddeb)] text-white px-4 py-2 font-bold rounded-md hover:opacity-80 cursor-pointer">
-                                        Start session
-                                    </button>
-                                </a>
+                                <button
+                                    onClick={() =>
+                                        handleStartSession(item.session.id)
+                                    }
+                                    className="[background:linear-gradient(144deg,#af40ff,#5b42f3_50%,#00ddeb)] text-white px-4 py-2 font-bold rounded-md hover:opacity-80 cursor-pointer"
+                                >
+                                    Start session
+                                </button>
 
                                 <div className="flex gap-4 pt-5">
                                     <button

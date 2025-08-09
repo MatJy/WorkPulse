@@ -17,7 +17,17 @@ export async function FetchSessionBreaksById(sessionId: number) {
         .select()
         .eq('session_id', sessionId);
 
-    const result: SessionsBreaks = { session, breaks: breaks || [] };
+    const { data: logs } = await supabase
+        .from('work_logs')
+        .select()
+        .eq('session_id', session.id)
+        .order('started_at', { ascending: false });
+
+    const result: SessionsBreaks = {
+        session,
+        breaks: breaks || [],
+        logs: logs || [],
+    };
 
     return result;
 }
