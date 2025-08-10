@@ -1,23 +1,37 @@
 # WorkPulse
 application that reminds you to take breaks. Create new work sessions and continue work sessions. Start work session and get break reminders. This application uses supabase to store data.
 
-## How does this work?
-* Sign up to create your own account (or use demo users)
-  * if you signed by yourself, go authenticate your email by pressing the link supabase sent you
-* Log in with the user
-* Create your first work session by pressing the + button on the bottom right corner
-  * Name the session
-  * Set the length of the session
-  * Set your desired break interval
-  * Click next
-  * Set names for every break you have and the length for each break
-* Now you can start your session, which leads you to a page with timers
-  * See how much work time you have left
-  * See when your break starts and when it ends
-  * **REMEBER to allow notifications to get break reminders** and to get notification when the break ends
-  * You can also end session mid work session if you want to
-* Every time you press return to home page when the session ends or the end session button, data how much you worked will be sent to supabase and the application will tell you in the home page how much you have worked in       that session
-* You can also edit and delete sessions
+### How WorkPulse Works
+
+1.  **Sign Up or Log In:**
+    
+    *   Create a new account with your email and verify it via the link sent to you.
+        
+    *   Alternatively, you can use one of the provided **demo users** to try out the app immediately.
+        
+2.  **Create a New Work Session:**
+    
+    *   Click the + button in the bottom-right corner of the app.
+        
+    *   Give your session a name, set its duration, and define your desired break interval.
+        
+    *   Name and set the length for each of your breaks.
+        
+3.  **Start Your Work Session:**
+    
+    *   Once a session begins, you'll be taken to a page with timers.
+        
+    *   **Remember to allow notifications!** This is crucial for receiving reminders when your breaks start and end.
+        
+    *   You can also end the session at any time.
+        
+4.  **Track Your Progress:**
+    
+    *   When a session ends (or you end it manually), the app saves your total work time and displays it on your home page.
+        
+5.  **Manage Sessions:**
+    
+    *   You can easily edit or delete your existing work sessions whenever you need to.
 
 ## Technologies used
 * Next.js
