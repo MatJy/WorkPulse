@@ -41,7 +41,7 @@ application that reminds you to take breaks. Create new work sessions and contin
 * Netlify for deployment
 
 ## Demo Users
-
+Feel free to try the app with these credentials:
 | Email    | Password |
 | -------- | ------- |
 | repav18580@0tires.com  | test123    |
