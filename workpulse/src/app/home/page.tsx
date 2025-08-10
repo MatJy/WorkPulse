@@ -1,4 +1,3 @@
-import { signOut } from '../logout/actions';
 import Profile from '../components/profile';
 import { FetchSessionsWithBreaks } from '../components/actions';
 import RealtimeSessionsBreaks from '../components/realtime-sessionsBreaks';

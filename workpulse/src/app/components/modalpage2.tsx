@@ -66,8 +66,10 @@ export default function ModalPage2({
                         <input
                             className="mt-1 p-2 w-full h-8 border rounded-md"
                             type="text"
+                            defaultValue={breaksData?.[i]?.name ?? ''}
                             name={`name${i + 1}`}
                             id={`name${i + 1}`}
+                            maxLength={100}
                             required
                         />
                         <label
@@ -80,6 +82,7 @@ export default function ModalPage2({
                             className="mt-1 p-2 w-full h-8 border rounded-md"
                             type="number"
                             name={`length${i + 1}`}
+                            defaultValue={breaksData?.[i].length}
                             placeholder="Minutes"
                             id={`length${i + 1}`}
                             max={breakTime - 1}

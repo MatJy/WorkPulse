@@ -1,7 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Timer from './timer';
-import Router from 'next/router';
 import Link from 'next/link';
 
 type TimerProps = {

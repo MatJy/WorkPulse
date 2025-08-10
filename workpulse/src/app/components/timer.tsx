@@ -18,7 +18,7 @@ export default function Timer({ time, onTick }: Prop) {
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [totalSeconds]);
+    }, [totalSeconds, time]);
 
     useEffect(() => {
         onTick?.(totalSeconds);

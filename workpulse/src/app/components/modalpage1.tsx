@@ -30,7 +30,7 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
         const total: number = Number(lengthHours) * 60 + Number(lengthMinutes);
 
         if (total <= 60 && total > 30) {
-            setOptionValues(['10', '15']);
+            setOptionValues(['10', '15', '30']);
         } else if (total > 60 && total <= 90) {
             setOptionValues(['15', '30']);
         } else if (total > 90 && total <= 120) {
@@ -90,6 +90,7 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
                     type="text"
                     name="name"
                     id="name"
+                    maxLength={100}
                     defaultValue={sessionData?.name ?? ''}
                     required
                 />
@@ -137,6 +138,8 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
                     Break every:
                 </label>
                 <select
+                    name="breakInterval"
+                    id="breakInterval"
                     value={breakTime}
                     onChange={(e) => setBreakTime(e.target.value)}
                     className="mt-1 p-2 w-full border rounded-md"
