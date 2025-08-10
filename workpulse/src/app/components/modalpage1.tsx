@@ -27,6 +27,14 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
         Number(lengthHours) * 60 + Number(lengthMinutes);
 
     useEffect(() => {
+        if (sessionData) {
+            setLengthHours(Math.floor(sessionData.length / 60).toString());
+            setLengthMinutes((sessionData.length % 60).toString());
+            setBreakTime(sessionData.break_interval.toString());
+        }
+    }, [sessionData]);
+
+    useEffect(() => {
         const total: number = Number(lengthHours) * 60 + Number(lengthMinutes);
 
         if (total <= 60 && total > 30) {
@@ -42,12 +50,7 @@ export default function ModalPage1({ sessionData, onNext }: Props) {
         } else if (total === 30) {
             setOptionValues(['10', '15']);
         }
-        if (sessionData) {
-            setLengthHours(Math.floor(sessionData.length / 60).toString());
-            setLengthMinutes((sessionData.length % 60).toString());
-            setBreakTime(sessionData.break_interval.toString());
-        }
-    }, [sessionData, lengthHours, lengthMinutes]);
+    }, [lengthHours, lengthMinutes]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
