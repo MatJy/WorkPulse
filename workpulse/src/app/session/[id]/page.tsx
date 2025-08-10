@@ -7,11 +7,9 @@ import BreakTimers from '@/app/components/breakTimers';
 import Link from 'next/link';
 import EndSessionButton from '@/app/components/endSessionButton';
 
-type Props = {
-    params: { id: string };
-};
-export default async function SessionPage({ params }: Props) {
-    const { id } = await params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function SessionPage({ params }: any) {
+    const { id } = params;
     const data = await FetchSessionBreaksById(Number(id));
     if (Array.isArray(data)) {
         redirect('/error');
