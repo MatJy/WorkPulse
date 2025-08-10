@@ -2,6 +2,11 @@ import Profile from '../components/profile';
 import { FetchSessionsWithBreaks } from '../components/actions';
 import RealtimeSessionsBreaks from '../components/realtime-sessionsBreaks';
 import PortalModal from '../components/showModal';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Dashboard',
+};
 
 export default async function Home() {
     const data = await FetchSessionsWithBreaks();

@@ -9,7 +9,7 @@ import EndSessionButton from '@/app/components/endSessionButton';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function SessionPage({ params }: any) {
-    const { id } = params;
+    const { id } = await params;
     const data = await FetchSessionBreaksById(Number(id));
     if (Array.isArray(data)) {
         redirect('/error');

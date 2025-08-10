@@ -19,33 +19,60 @@ export default function ModalPage2({
 }: Props) {
     if (!breaks) return;
 
-    function handleSubmit(formData: FormData) {
+    async function handleSubmit(formData: FormData) {
         if (breaksData) {
-            // Päivitä vain olemassa olevat breikit
-            Array.from(
-                { length: Math.min(breaks, breaksData.length) },
-                (_, i) => {
-                    EditBreak(formData, breaksData[i].session_id, i + 1);
-                }
-            );
+            // Päivitä olemassa olevat tauot
+            for (let i = 0; i < Math.min(breaks, breaksData.length); i++) {
+                const breakFormData = new FormData();
+                const name =
+                    formData.get(`name${i + 1}`)?.toString() ||
+                    `Break ${i + 1}`;
+                const length = formData.get(`length${i + 1}`)?.toString() || '';
 
-            // Lisää uudet breikit, jos niitä tarvitaan
-            if (breaks > breaksData.length) {
-                Array.from({ length: breaks - breaksData.length }, (_, i) => {
-                    const newIndex = breaksData.length + i + 1;
-                    CreateBreak(formData, breaksData[0].session_id, newIndex);
-                });
+                // Varmistetaan, että lähetämme oikeat avaimet palvelinpuolen toiminnolle.
+                breakFormData.append(`name${i + 1}`, name);
+                breakFormData.append(`length${i + 1}`, length);
+
+                await EditBreak(breakFormData, sessionId, i + 1);
             }
 
-            // Poista ylimääräiset, jos käyttäjä vähensi määrää
+            // Lisää uudet tauot, jos niitä tarvitaan
+            if (breaks > breaksData.length) {
+                for (let i = breaksData.length; i < breaks; i++) {
+                    const breakFormData = new FormData();
+                    const name =
+                        formData.get(`name${i + 1}`)?.toString() ||
+                        `Break ${i + 1}`;
+                    const length =
+                        formData.get(`length${i + 1}`)?.toString() || '';
+
+                    // Varmistetaan, että lähetämme oikeat avaimet palvelinpuolen toiminnolle.
+                    breakFormData.append(`name${i + 1}`, name);
+                    breakFormData.append(`length${i + 1}`, length);
+
+                    await CreateBreak(breakFormData, sessionId, i + 1);
+                }
+            }
+
+            // Poista ylimääräiset tauot, jos käyttäjä vähensi määrää
             if (breaks < breaksData.length) {
-                DeleteExtraBreaks(breaksData[0].session_id, breaks);
+                await DeleteExtraBreaks(sessionId, breaks);
             }
         } else {
             // Jos ei ole aiempaa dataa, luodaan kaikki breikit
-            Array.from({ length: breaks }, (_, i) => {
-                CreateBreak(formData, sessionId, i + 1);
-            });
+            for (let i = 0; i < breaks; i++) {
+                const breakFormData = new FormData();
+                const name =
+                    formData.get(`name${i + 1}`)?.toString() ||
+                    `Break ${i + 1}`;
+                const length = formData.get(`length${i + 1}`)?.toString() || '';
+
+                // Varmistetaan, että lähetämme oikeat avaimet palvelinpuolen toiminnolle.
+                breakFormData.append(`name${i + 1}`, name);
+                breakFormData.append(`length${i + 1}`, length);
+
+                await CreateBreak(breakFormData, sessionId, i + 1);
+            }
         }
 
         onClose?.();
@@ -82,7 +109,7 @@ export default function ModalPage2({
                             className="mt-1 p-2 w-full h-8 border rounded-md"
                             type="number"
                             name={`length${i + 1}`}
-                            defaultValue={breaksData?.[i].length}
+                            defaultValue={breaksData?.[i]?.length ?? ''}
                             placeholder="Minutes"
                             id={`length${i + 1}`}
                             max={breakTime - 1}
