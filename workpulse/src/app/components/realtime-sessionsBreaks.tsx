@@ -193,12 +193,6 @@ export default function RealtimeSessionsBreaks({
                 </div>
 
                 <div className='md:flex justify-between items-center pt-4'>
-                  {/* <button
-                    onClick={() => handleStartSession(item.session.id)}
-                    className='[background:linear-gradient(144deg,#af40ff,#5b42f3_50%,#00ddeb)] text-white px-4 py-2 font-bold rounded-md hover:opacity-80 cursor-pointer'
-                  >
-                    Start session
-                  </button> */}
                   <div className='flex justify-end space-x-2 pt-5'>
                     <button
                       disabled={loadingSessionId === item.session.id}
