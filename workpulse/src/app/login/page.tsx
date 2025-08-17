@@ -24,6 +24,7 @@ export default function Login() {
               placeholder='Email address'
               name='email'
               id='email'
+              required
             />
             <input
               type='password'
@@ -31,6 +32,7 @@ export default function Login() {
               placeholder='Password'
               name='password'
               id='password'
+              required
             />
 
             <button
